@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
+import Cookies from 'js-cookie';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const Navigation = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const [isLogin, setIsLogin] = useState(false);
+  const [token, setToken] = useState('');
   const [profile, setProfile] = useState(false);
 
   const logoutHandler = () => {
+    setProfile(false);
+    Cookies.remove('token');
     navigate('/');
-    setTimeout(() => {
-      setIsLogin(false);
-    }, 1000);
-    window.location.reload();
   };
+
+  useEffect(() => {
+    setToken(Cookies.get('token'));
+  }, [logoutHandler]);
 
   const subMenuAnimate = {
     enter: {
@@ -39,10 +42,7 @@ const Navigation = () => {
   };
 
   return (
-    <header
-      aria-label='Site Header'
-      className='bg-white dark:bg-gray-900 sticky top-0 z-50'
-    >
+    <header aria-label='Site Header' className='bg-white dark:bg-gray-900'>
       <div className='mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8'>
         <div className='flex h-16 items-center justify-between'>
           <div className='md:flex md:items-center md:gap-12'>
@@ -106,7 +106,7 @@ const Navigation = () => {
 
           <div className='flex items-center gap-4'>
             <div className='hidden sm:flex sm:gap-4'>
-              {isLogin ? (
+              {token ? (
                 <a
                   className='flex justify-center items-center space-x-2 text-white cursor-pointer'
                   onClick={() => setProfile(!profile)}
@@ -141,7 +141,7 @@ const Navigation = () => {
                 <>
                   <a
                     className='rounded-md bg-emerald-700 px-5 py-2.5 text-sm font-medium text-white shadow dark:hover:bg-teal-500 cursor-pointer'
-                    onClick={() => setIsLogin(true)}
+                    onClick={() => navigate('/login')}
                   >
                     Login
                   </a>
@@ -149,7 +149,7 @@ const Navigation = () => {
                   <div className='hidden sm:flex'>
                     <a
                       className='rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600 dark:bg-gray-800 dark:text-white dark:hover:text-white/75'
-                      href='/'
+                      onClick={() => navigate('/register')}
                     >
                       Register
                     </a>
@@ -264,7 +264,7 @@ const Navigation = () => {
             Users
           </a>
           <hr className='pb-1' />
-          {isLogin ? (
+          {token ? (
             <>
               <a className='flex justify-center items-center space-x-1'>
                 <svg
@@ -292,11 +292,14 @@ const Navigation = () => {
             <>
               <a
                 className='text-white bg-emerald-700 block px-3 py-2 rounded-md text-base font-medium'
-                onClick={() => setIsLogin(true)}
+                onClick={() => navigate('/login')}
               >
                 Login
               </a>
-              <a className='text-emerald-700 bg-white block px-3 py-2 rounded-md text-base border border-emerald-700 font-medium'>
+              <a
+                className='text-emerald-700 bg-white block px-3 py-2 rounded-md text-base border border-emerald-700 font-medium'
+                onClick={() => navigate('/register')}
+              >
                 Register
               </a>
             </>

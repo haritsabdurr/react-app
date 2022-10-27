@@ -1,9 +1,13 @@
+import Modal from 'components/popup/Modal';
+import ErrorPopup from 'components/popup/ErrorPopup';
+import LoadingTable from 'components/loader/LoadingTable';
+import Navigation from 'components/Navigation';
+import LoginPopup from 'components/popup/LoginPopup';
+import Footer from 'components/Footer';
+import Cookies from 'js-cookie';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUser } from '../../api';
-import Modal from '../../components/Modal';
-import ErrorPopup from '../../components/ErrorPopup';
-import LoadingTable from '../../components/LoadingTable';
+import { getUser } from 'api';
 
 const MetaInput = () => {
   const navigate = useNavigate();
@@ -13,10 +17,10 @@ const MetaInput = () => {
   const [isWarning, setIsWarning] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loginVal, setLoginVal] = useState(true);
 
   const handleChange = (e) => {
-    const { value } = e.target.value;
-    console.log(value);
+    e.preventDefault();
   };
 
   const handleSubmit = (e) => {
@@ -30,17 +34,22 @@ const MetaInput = () => {
   };
 
   const fetchUsers = () => {
-    getUser()
-      .then((res) => {
-        setTimeout(() => {
-          setIsLoading(true);
-          setData(res.data);
-        }, 2000);
-      })
-      .catch((err) => {
-        setMeta(err.message);
-        setIsError(true);
-      });
+    const isLogin = Cookies.get('token');
+
+    if (isLogin) {
+      getUser()
+        .then((res) => {
+          setTimeout(() => {
+            setIsLoading(true);
+            setData(res.data);
+          }, 1000);
+        })
+        .catch((err) => {
+          setMeta(err.message);
+          setIsError(true);
+        });
+      setLoginVal(false);
+    }
   };
 
   useEffect(() => {
@@ -48,7 +57,9 @@ const MetaInput = () => {
   }, []);
 
   return (
-    <div>
+    <>
+      <Navigation />
+      <LoginPopup close={loginVal} />
       <ErrorPopup message={meta} open={isError} close={redirectError} />
       <Modal open={isWarning} close={() => setIsWarning(false)} />
       <div className='mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8'>
@@ -139,12 +150,12 @@ const MetaInput = () => {
 
               <tbody className='divide-y divide-gray-200'>
                 {data?.map((data) => (
-                  <tr key={data?.id}>
+                  <tr key={data?._id}>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
                       {data?.name}
                     </td>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
-                      {data?.phone}
+                      {data?.comment}
                     </td>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
                       {data?.email}
@@ -185,7 +196,8 @@ const MetaInput = () => {
           )}
         </div>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 };
 
