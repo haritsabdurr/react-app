@@ -3,28 +3,50 @@ import ErrorPopup from 'components/popup/ErrorPopup';
 import LoadingTable from 'components/loader/LoadingTable';
 import Navigation from 'components/Navigation';
 import LoginPopup from 'components/popup/LoginPopup';
+import SuccessToast from 'components/popup/toast/SuccessToast';
 import Footer from 'components/Footer';
 import Cookies from 'js-cookie';
+import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { baseUrl } from 'utils/Url';
 import { getUser } from 'api';
 
 const MetaInput = () => {
   const navigate = useNavigate();
-  const [meta, setMeta] = useState();
+  const [message, setMessage] = useState();
   const [data, setData] = useState([]);
+
+  const [input, setInput] = useState({
+    meta_title: '',
+    meta_url: '',
+    meta_desc: '',
+  });
 
   const [isWarning, setIsWarning] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
   const [loginVal, setLoginVal] = useState(true);
 
   const handleChange = (e) => {
-    e.preventDefault();
+    const { name, value } = e.target;
+    setInput({ ...input, [name]: value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsSubmit((prev) => !prev);
+
+    axios
+      .post(`${baseUrl}/meta`, {
+        meta_title: input.meta_title,
+        meta_url: input.meta_url,
+        meta_desc: input.meta_desc,
+      })
+      .catch((err) => {
+        throw err;
+      });
   };
 
   const redirectError = () => {
@@ -41,11 +63,11 @@ const MetaInput = () => {
         .then((res) => {
           setTimeout(() => {
             setIsLoading(true);
-            setData(res.data);
+            setData(res.data.Meta);
           }, 1000);
         })
         .catch((err) => {
-          setMeta(err.message);
+          setMessage(err.message);
           setIsError(true);
         });
       setLoginVal(false);
@@ -54,14 +76,15 @@ const MetaInput = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [isSubmit]);
 
   return (
     <>
       <Navigation />
       <LoginPopup close={loginVal} />
-      <ErrorPopup message={meta} open={isError} close={redirectError} />
+      <ErrorPopup message={message} open={isError} close={redirectError} />
       <Modal open={isWarning} close={() => setIsWarning(false)} />
+      <SuccessToast />
       <div className='mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8'>
         <div className='mx-auto max-w-lg text-center'>
           <h1 className='text-2xl font-bold sm:text-3xl'>Meta Input</h1>
@@ -83,6 +106,9 @@ const MetaInput = () => {
                 name='meta_title'
                 className='w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm'
                 placeholder='Meta Title'
+                value={input.meta_title}
+                onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -97,6 +123,9 @@ const MetaInput = () => {
                 name='meta_url'
                 className='w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm'
                 placeholder='Meta URL'
+                value={input.meta_url}
+                onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -108,9 +137,12 @@ const MetaInput = () => {
             <div className='relative'>
               <input
                 type='text'
-                name='meta_descrption'
+                name='meta_desc'
                 className='w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm'
                 placeholder='Meta Description'
+                value={input.meta_desc}
+                onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -150,15 +182,15 @@ const MetaInput = () => {
 
               <tbody className='divide-y divide-gray-200'>
                 {data?.map((data) => (
-                  <tr key={data?._id}>
+                  <tr key={data?.id}>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
-                      {data?.name}
+                      {data?.meta_title}
                     </td>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
-                      {data?.comment}
+                      {data?.meta_url}
                     </td>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
-                      {data?.email}
+                      {data?.meta_desc}
                     </td>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
                       <div className='flex justify-start items-center gap-4'>

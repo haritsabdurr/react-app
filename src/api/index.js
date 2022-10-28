@@ -1,12 +1,12 @@
 import axios from 'axios';
-import { urlUsers } from 'utils/Url';
+import { baseUrl } from 'utils/Url';
 import { urlPhotos } from 'utils/Url';
 import { urlTodos } from 'utils/Url';
 import { urlComments } from 'utils/Url';
 
 export async function getUser() {
   try {
-    const response = await axios.get(urlUsers);
+    const response = await axios.get(`${baseUrl}/metas`);
     return response;
   } catch (error) {
     throw error;

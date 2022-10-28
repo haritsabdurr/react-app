@@ -1,16 +1,18 @@
 import axios from 'axios';
 import Footer from 'components/Footer';
 import Navigation from 'components/Navigation';
+import LoadingButton from 'components/loader/LoadingButton';
 import Cookies from 'js-cookie';
 import jwtDecode from 'jwt-decode';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { urlAccount } from 'utils/Url';
 
 const Login = () => {
   const navigate = useNavigate();
-  const setError = useState(false);
+
   const [seePassword, setSeePassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [message, setMessage] = useState('');
   const [account, setAccount] = useState({
@@ -25,6 +27,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     axios
       .post(`${urlAccount}/signin`, {
@@ -42,7 +45,7 @@ const Login = () => {
       })
       .catch((err) => {
         setMessage(err.response.data.message);
-        setError(true);
+        setIsLoading(false);
         throw err;
       });
   };
@@ -80,6 +83,7 @@ const Login = () => {
                 name='username'
                 value={account.username}
                 onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -96,6 +100,7 @@ const Login = () => {
                 name='password'
                 value={account.password}
                 onChange={handleChange}
+                required
               />
               <span
                 className='absolute inset-y-0 right-4 inline-flex items-center'
@@ -132,12 +137,16 @@ const Login = () => {
           </div>
 
           <div className='flex justify-center'>
-            <button
-              type='submit'
-              className='ml-3 text-center rounded-lg bg-blue-500 px-8 py-3 text-sm font-medium text-white'
-            >
-              Sign in
-            </button>
+            {isLoading ? (
+              <LoadingButton />
+            ) : (
+              <button
+                type='submit'
+                className='ml-3 text-center rounded-lg bg-blue-500 px-8 py-3 text-sm font-medium text-white'
+              >
+                Login
+              </button>
+            )}
           </div>
         </form>
         <div className='text-center mt-4'>

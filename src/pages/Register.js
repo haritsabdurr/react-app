@@ -1,5 +1,6 @@
 import Footer from 'components/Footer';
 import Navigation from 'components/Navigation';
+import LoadingButton from 'components/loader/LoadingButton';
 import axios from 'axios';
 import { useState } from 'react';
 import { urlAccount } from 'utils/Url';
@@ -7,8 +8,10 @@ import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const navigate = useNavigate();
+
   const [error, setError] = useState(false);
   const [seePassword, setSeePassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [account, setAccount] = useState({
     username: '',
@@ -24,6 +27,7 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     axios
       .post(`${urlAccount}/signup`, {
@@ -31,8 +35,10 @@ const Register = () => {
         email: account.email,
         password: account.password,
       })
-      .then((res) => console.log(res))
+      .then(() => navigate('/login'))
       .catch((err) => {
+        setError(err.response.data.message);
+        setIsLoading(false);
         throw err;
       });
   };
@@ -62,18 +68,13 @@ const Register = () => {
             <div className='relative'>
               <input
                 type='text'
-                className={`${
-                  error ? 'border-red-500' : 'border-gray-200'
-                } w-full rounded-lg p-4 pr-12 text-sm shadow-sm`}
+                className='border-gray-200 w-full rounded-lg p-4 pr-12 text-sm shadow-sm'
                 placeholder='Enter username'
                 name='username'
                 value={account.username}
                 onChange={handleChange}
                 required
               />
-              <p className='text-xs text-red-500 ml-3 mt-1'>
-                {error ? 'Incorrect value!' : ''}
-              </p>
             </div>
           </div>
 
@@ -85,18 +86,13 @@ const Register = () => {
             <div className='relative'>
               <input
                 type='email'
-                className={`${
-                  error ? 'border-red-500' : 'border-gray-200'
-                } w-full rounded-lg p-4 pr-12 text-sm shadow-sm`}
+                className='border-gray-200 w-full rounded-lg p-4 pr-12 text-sm shadow-sm'
                 placeholder='Enter email'
                 name='email'
                 value={account.email}
                 onChange={handleChange}
                 required
               />
-              <p className='text-xs text-red-500 ml-3 mt-1'>
-                {error ? 'Incorrect value!' : ''}
-              </p>
             </div>
           </div>
 
@@ -107,9 +103,7 @@ const Register = () => {
             <div className='relative'>
               <input
                 type={`${seePassword ? 'text' : 'password'}`}
-                className={`${
-                  error ? 'border-red-500' : 'border-gray-200'
-                } w-full rounded-lg p-4 pr-12 text-sm shadow-sm`}
+                className='border-gray-200 w-full rounded-lg p-4 pr-12 text-sm shadow-sm'
                 placeholder='Enter password'
                 name='password'
                 value={account.password}
@@ -141,19 +135,26 @@ const Register = () => {
                   />
                 </svg>
               </span>
-              <p className='text-xs text-red-500 ml-3 mt-1'>
-                {error ? 'Incorrect value!' : ''}
-              </p>
             </div>
           </div>
 
           <div className='flex justify-center'>
-            <button
-              type='submit'
-              className='ml-3 text-center rounded-lg bg-blue-500 px-8 py-3 text-sm font-medium text-white'
-            >
-              Register
-            </button>
+            <p className='text-sm font-medium text-red-500 ml-3 mt-1'>
+              {error}
+            </p>
+          </div>
+
+          <div className='flex justify-center'>
+            {isLoading ? (
+              <LoadingButton />
+            ) : (
+              <button
+                type='submit'
+                className='ml-3 text-center rounded-lg bg-blue-500 px-8 py-3 text-sm font-medium text-white'
+              >
+                Register
+              </button>
+            )}
           </div>
         </form>
         <div className='text-center mt-4'>
