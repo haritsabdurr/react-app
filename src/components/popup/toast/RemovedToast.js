@@ -1,15 +1,13 @@
 import React from 'react';
 
-const SuccessToast = ({ open }) => {
+const RemovedToast = () => {
   return (
     <div
       id='toast-success'
-      className={`${
-        open ? 'flex' : 'hidden'
-      } absolute top-24 right-10 items-center p-4 mb-4 w-full max-w-[16rem] text-white bg-green-600 rounded-lg shadow`}
+      className='absolute top-24 right-10 flex items-center p-4 mb-4 w-full max-w-[16rem] text-white bg-red-600 rounded-lg shadow'
       role='alert'
     >
-      <div className='inline-flex flex-shrink-0 justify-center items-center w-8 h-8 text-green-600 bg-green-100 rounded-lg'>
+      <div className='inline-flex flex-shrink-0 justify-center items-center w-8 h-8 text-red-600 bg-red-50 rounded-lg'>
         <svg
           aria-hidden='true'
           className='w-5 h-5'
@@ -25,9 +23,9 @@ const SuccessToast = ({ open }) => {
         </svg>
         <span className='sr-only'>Check icon</span>
       </div>
-      <div className='ml-5 text-sm font-normal'>Item added successfully!</div>
+      <div className='ml-5 text-sm font-normal'>Item removed successfully!</div>
     </div>
   );
 };
 
-export default SuccessToast;
+export default RemovedToast;

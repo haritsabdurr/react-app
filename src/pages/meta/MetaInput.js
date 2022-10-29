@@ -4,6 +4,8 @@ import LoadingTable from 'components/loader/LoadingTable';
 import Navigation from 'components/Navigation';
 import LoginPopup from 'components/popup/LoginPopup';
 import SuccessToast from 'components/popup/toast/SuccessToast';
+import RemovedToast from 'components/popup/toast/RemovedToast';
+import UpdatedToast from 'components/popup/toast/UpdatedToast';
 import Footer from 'components/Footer';
 import Cookies from 'js-cookie';
 import axios from 'axios';
@@ -23,7 +25,11 @@ const MetaInput = () => {
     meta_desc: '',
   });
 
-  const [isWarning, setIsWarning] = useState(false);
+  const [isWarning, setIsWarning] = useState({
+    show: false,
+    id: null,
+  });
+  const [isAdd, setIsAdd] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
@@ -44,6 +50,8 @@ const MetaInput = () => {
         meta_url: input.meta_url,
         meta_desc: input.meta_desc,
       })
+      .then(setIsAdd(true))
+      .then(setTimeout(() => setIsAdd(false), 3000))
       .catch((err) => {
         throw err;
       });
@@ -74,6 +82,30 @@ const MetaInput = () => {
     }
   };
 
+  const deleteMeta = (id) => {
+    axios.delete(`${baseUrl}/meta/${id}`);
+    fetchUsers();
+    // setIsWarning({
+    //   show: true,
+    //   id: id,
+    // });
+  };
+
+  const deleteMetaTrue = (id) => {
+    if (setIsWarning.show && setIsWarning.id) {
+      console.log('Hit');
+    }
+    //
+    //
+  };
+
+  const deleteMetaFalse = () => {
+    setIsWarning({
+      show: false,
+      id: null,
+    });
+  };
+
   useEffect(() => {
     fetchUsers();
   }, [isSubmit]);
@@ -83,8 +115,15 @@ const MetaInput = () => {
       <Navigation />
       <LoginPopup close={loginVal} />
       <ErrorPopup message={message} open={isError} close={redirectError} />
-      <Modal open={isWarning} close={() => setIsWarning(false)} />
-      <SuccessToast />
+      {isWarning.show && (
+        <Modal
+          open={isWarning.show}
+          close={deleteMetaFalse}
+          del={deleteMetaTrue}
+        />
+      )}
+
+      <SuccessToast open={isAdd} />
       <div className='mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8'>
         <div className='mx-auto max-w-lg text-center'>
           <h1 className='text-2xl font-bold sm:text-3xl'>Meta Input</h1>
@@ -208,7 +247,7 @@ const MetaInput = () => {
                           xmlns='http://www.w3.org/2000/svg'
                           viewBox='0 0 24 24'
                           fill='currentColor'
-                          onClick={() => setIsWarning(true)}
+                          onClick={() => deleteMeta(data.id)}
                           className='w-5 h-5 hover:text-red-500'
                         >
                           <path

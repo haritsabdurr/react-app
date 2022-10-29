@@ -1,4 +1,4 @@
-const Modal = ({ open, close }) => {
+const Modal = ({ open, del, close }) => {
   return (
     <div
       className={`${
@@ -14,6 +14,7 @@ const Modal = ({ open, close }) => {
           <button
             type='button'
             className='rounded bg-red-600 px-4 py-2 font-medium text-white'
+            onClick={del}
           >
             Yes, I'm sure
           </button>
