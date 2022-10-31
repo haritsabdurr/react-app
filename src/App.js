@@ -17,11 +17,11 @@ function App() {
       <Routes>
         <Route path='/' element={<Homepage />} />
         <Route path='/metaInput' element={<MetaInput />} />
-        <Route path='/metaEdit' element={<MetaEdit />} />
+        <Route path='/metaEdit/:id' element={<MetaEdit />} />
         <Route path='/bannerInput' element={<BannerInput />} />
-        <Route path='/bannerEdit' element={<BannerEdit />} />
+        <Route path='/bannerEdit/:id' element={<BannerEdit />} />
         <Route path='/categoryInput' element={<CategoryInput />} />
-        <Route path='/categoryEdit' element={<CategoryEdit />} />
+        <Route path='/categoryEdit/:id' element={<CategoryEdit />} />
         <Route path='/photoGallery' element={<Photos />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />

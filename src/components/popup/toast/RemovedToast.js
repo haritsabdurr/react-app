@@ -1,10 +1,12 @@
 import React from 'react';
 
-const RemovedToast = () => {
+const RemovedToast = ({ open }) => {
   return (
     <div
       id='toast-success'
-      className='absolute top-24 right-10 flex items-center p-4 mb-4 w-full max-w-[16rem] text-white bg-red-600 rounded-lg shadow'
+      className={`${
+        open ? 'flex' : 'hidden'
+      } absolute top-24 right-10 items-center p-4 mb-4 w-full max-w-[16rem] text-white bg-red-600 rounded-lg shadow`}
       role='alert'
     >
       <div className='inline-flex flex-shrink-0 justify-center items-center w-8 h-8 text-red-600 bg-red-50 rounded-lg'>

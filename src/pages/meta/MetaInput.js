@@ -10,7 +10,7 @@ import Footer from 'components/Footer';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { baseUrl } from 'utils/Url';
 import { getUser } from 'api';
 
@@ -25,10 +25,7 @@ const MetaInput = () => {
     meta_desc: '',
   });
 
-  const [isWarning, setIsWarning] = useState({
-    show: false,
-    id: null,
-  });
+  const [isDelete, setIsDelete] = useState(false);
   const [isAdd, setIsAdd] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -51,7 +48,7 @@ const MetaInput = () => {
         meta_desc: input.meta_desc,
       })
       .then(setIsAdd(true))
-      .then(setTimeout(() => setIsAdd(false), 3000))
+      .then(setTimeout(() => setIsAdd(false), 2200))
       .catch((err) => {
         throw err;
       });
@@ -72,7 +69,7 @@ const MetaInput = () => {
           setTimeout(() => {
             setIsLoading(true);
             setData(res.data.Meta);
-          }, 1000);
+          }, 400);
         })
         .catch((err) => {
           setMessage(err.message);
@@ -82,28 +79,12 @@ const MetaInput = () => {
     }
   };
 
-  const deleteMeta = (id) => {
-    axios.delete(`${baseUrl}/meta/${id}`);
+  const deleteMeta = async (id) => {
+    await axios
+      .delete(`${baseUrl}/meta/${id}`)
+      .then(setIsDelete(true))
+      .then(setTimeout(() => setIsDelete(false), 2200));
     fetchUsers();
-    // setIsWarning({
-    //   show: true,
-    //   id: id,
-    // });
-  };
-
-  const deleteMetaTrue = (id) => {
-    if (setIsWarning.show && setIsWarning.id) {
-      console.log('Hit');
-    }
-    //
-    //
-  };
-
-  const deleteMetaFalse = () => {
-    setIsWarning({
-      show: false,
-      id: null,
-    });
   };
 
   useEffect(() => {
@@ -115,14 +96,7 @@ const MetaInput = () => {
       <Navigation />
       <LoginPopup close={loginVal} />
       <ErrorPopup message={message} open={isError} close={redirectError} />
-      {isWarning.show && (
-        <Modal
-          open={isWarning.show}
-          close={deleteMetaFalse}
-          del={deleteMetaTrue}
-        />
-      )}
-
+      <RemovedToast open={isDelete} />
       <SuccessToast open={isAdd} />
       <div className='mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8'>
         <div className='mx-auto max-w-lg text-center'>
@@ -233,16 +207,17 @@ const MetaInput = () => {
                     </td>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
                       <div className='flex justify-start items-center gap-4'>
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          viewBox='0 0 24 24'
-                          fill='currentColor'
-                          onClick={() => navigate('/metaEdit')}
-                          className='w-5 h-5 hover:text-green-500'
-                        >
-                          <path d='M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z' />
-                          <path d='M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z' />
-                        </svg>
+                        <Link to={`/metaEdit/${data?.id}`} state={data}>
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            viewBox='0 0 24 24'
+                            fill='currentColor'
+                            className='w-5 h-5 hover:text-green-500'
+                          >
+                            <path d='M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z' />
+                            <path d='M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z' />
+                          </svg>
+                        </Link>
                         <svg
                           xmlns='http://www.w3.org/2000/svg'
                           viewBox='0 0 24 24'
