@@ -12,34 +12,23 @@ const MetaEdit = () => {
   const data = location.state;
 
   const [isEdit, setIsEdit] = useState(false);
-  const [input, setInput] = useState({
-    meta_title: data.meta_title,
-    meta_url: data.meta_url,
-    meta_desc: data.meta_desc,
-  });
-  const [inputs, setInputs] = useState({
-    meta_title: '',
-    meta_url: '',
-    meta_desc: '',
-  });
 
-  const handleChange = (value) => {
-    setInput({ name: value });
-  };
+  const [title, setTitle] = useState(data.meta_title);
+  const [url, setUrl] = useState(data.meta_url);
+  const [desc, setDesc] = useState(data.meta_desc);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    axios
+    await axios
       .put(`${baseUrl}/meta/${data.id}`, {
-        meta_title: input.meta_title,
-        meta_url: input.meta_url,
-        meta_desc: input.meta_desc,
+        meta_title: title,
+        meta_url: url,
+        meta_desc: desc,
       })
       .then(setIsEdit(true))
       .then(setTimeout(() => setIsEdit(false), 2200));
     setTimeout(() => {
-      // console.log(inputs.meta_title);
       navigate('/metaInput');
     }, 2000).catch((err) => {
       throw err;
@@ -71,8 +60,8 @@ const MetaEdit = () => {
                 name='meta_title'
                 className='w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm'
                 placeholder='Meta Title'
-                value={input.meta_title}
-                onChange={(e) => handleChange(e.target.value)}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 required
               />
             </div>
@@ -88,8 +77,8 @@ const MetaEdit = () => {
                 name='meta_url'
                 className='w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm'
                 placeholder='Meta URL'
-                value={input.meta_title}
-                onChange={(e) => handleChange(e.target.value)}
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
                 required
               />
             </div>
@@ -102,11 +91,11 @@ const MetaEdit = () => {
             <div className='relative'>
               <input
                 type='text'
-                name='meta_descrption'
+                name='meta_desc'
                 className='w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm '
                 placeholder='Meta Description'
-                value={input.meta_title}
-                onChange={(e) => handleChange(e.target.value)}
+                value={desc}
+                onChange={(e) => setDesc(e.target.value)}
                 required
               />
             </div>

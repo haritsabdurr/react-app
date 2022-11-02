@@ -4,9 +4,27 @@ import { urlPhotos } from 'utils/Url';
 import { urlTodos } from 'utils/Url';
 import { urlComments } from 'utils/Url';
 
-export async function getUser() {
+export async function getMetas() {
   try {
     const response = await axios.get(`${baseUrl}/metas`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getBanners() {
+  try {
+    const response = await axios.get(`${baseUrl}/banners`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getCategories() {
+  try {
+    const response = await axios.get(`${baseUrl}/kategori`);
     return response;
   } catch (error) {
     throw error;

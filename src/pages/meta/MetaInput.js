@@ -1,18 +1,16 @@
-import Modal from 'components/popup/Modal';
 import ErrorPopup from 'components/popup/ErrorPopup';
 import LoadingTable from 'components/loader/LoadingTable';
 import Navigation from 'components/Navigation';
 import LoginPopup from 'components/popup/LoginPopup';
 import SuccessToast from 'components/popup/toast/SuccessToast';
 import RemovedToast from 'components/popup/toast/RemovedToast';
-import UpdatedToast from 'components/popup/toast/UpdatedToast';
 import Footer from 'components/Footer';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { baseUrl } from 'utils/Url';
-import { getUser } from 'api';
+import { getMetas } from 'api';
 
 const MetaInput = () => {
   const navigate = useNavigate();
@@ -25,12 +23,12 @@ const MetaInput = () => {
     meta_desc: '',
   });
 
-  const [isDelete, setIsDelete] = useState(false);
-  const [isAdd, setIsAdd] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSubmit, setIsSubmit] = useState(false);
-  const [loginVal, setLoginVal] = useState(true);
+  const [isDelete, setIsDelete] = useState(false); //State for delete action
+  const [isAdd, setIsAdd] = useState(false); //State for create action
+  const [isError, setIsError] = useState(false); //State for error fetch
+  const [isLoading, setIsLoading] = useState(false); //State for loading
+  const [isSubmit, setIsSubmit] = useState(false); //State for submit action
+  const [loginVal, setLoginVal] = useState(true); //State for login cookies check
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -64,7 +62,7 @@ const MetaInput = () => {
     const isLogin = Cookies.get('token');
 
     if (isLogin) {
-      getUser()
+      getMetas()
         .then((res) => {
           setTimeout(() => {
             setIsLoading(true);

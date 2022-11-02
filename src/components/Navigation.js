@@ -7,6 +7,7 @@ const Navigation = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [token, setToken] = useState('');
+  const [user, setUser] = useState('');
   const [profile, setProfile] = useState(false);
 
   const logoutHandler = () => {
@@ -17,6 +18,7 @@ const Navigation = () => {
 
   useEffect(() => {
     setToken(Cookies.get('token'));
+    setUser(Cookies.get('user'));
   }, [logoutHandler]);
 
   const subMenuAnimate = {
@@ -123,7 +125,7 @@ const Navigation = () => {
                       clipRule='evenodd'
                     />
                   </svg>
-                  <span className='text-sm'>Username</span>
+                  <span className='text-sm'>{user}</span>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 24 24'
@@ -279,7 +281,7 @@ const Navigation = () => {
                     clipRule='evenodd'
                   />
                 </svg>
-                <span>Username</span>
+                <span>{user}</span>
               </a>
               <a
                 className='text-white bg-red-600 block px-3 py-2 rounded-md text-base font-medium'

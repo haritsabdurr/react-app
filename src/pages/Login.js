@@ -4,7 +4,7 @@ import Navigation from 'components/Navigation';
 import LoadingButton from 'components/loader/LoadingButton';
 import Cookies from 'js-cookie';
 import jwtDecode from 'jwt-decode';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { urlAccount } from 'utils/Url';
 
@@ -39,6 +39,7 @@ const Login = () => {
         var decoded = jwtDecode(token);
 
         Cookies.set('token', res.data.accessToken);
+        Cookies.set('user', res.data.username);
         console.log(decoded);
 
         navigate('/');

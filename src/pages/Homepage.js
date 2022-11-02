@@ -37,7 +37,7 @@ const Homepage = () => {
                 type='submit'
                 className='group mt-4 flex w-full items-center justify-center rounded-md bg-emerald-700 px-5 py-3 text-white transition focus:outline-none focus:ring focus:ring-yellow-400 sm:mt-0 sm:w-auto'
               >
-                <span className='text-sm font-medium'> Register Now </span>
+                <span className='text-sm font-medium'> Get Newsletter </span>
 
                 <svg
                   className='ml-3 h-5 w-5'

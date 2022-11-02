@@ -1,6 +1,7 @@
 import Footer from 'components/Footer';
 import Navigation from 'components/Navigation';
 import LoadingButton from 'components/loader/LoadingButton';
+import RegisterToast from 'components/popup/toast/RegisterToast';
 import axios from 'axios';
 import { useState } from 'react';
 import { urlAccount } from 'utils/Url';
@@ -12,6 +13,7 @@ const Register = () => {
   const [error, setError] = useState(false);
   const [seePassword, setSeePassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isRegister, setIsRegister] = useState(false);
 
   const [account, setAccount] = useState({
     username: '',
@@ -35,7 +37,12 @@ const Register = () => {
         email: account.email,
         password: account.password,
       })
-      .then(() => navigate('/login'))
+      .then(setIsRegister(true))
+      .then(
+        setTimeout(() => {
+          navigate('/login');
+        }, 2500)
+      )
       .catch((err) => {
         setError(err.response.data.message);
         setIsLoading(false);
@@ -46,6 +53,7 @@ const Register = () => {
   return (
     <>
       <Navigation />
+      <RegisterToast open={isRegister} />
       <div className='mx-auto max-w-screen-xl px-4 py-32 sm:px-6 lg:px-8'>
         <div className='mx-auto max-w-lg text-center'>
           <h1 className='text-2xl font-bold sm:text-3xl'>Create an Account</h1>

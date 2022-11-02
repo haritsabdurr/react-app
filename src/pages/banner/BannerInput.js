@@ -1,49 +1,111 @@
 import Navigation from 'components/Navigation';
 import Footer from 'components/Footer';
-import Modal from 'components/popup/Modal';
 import LoginPopup from 'components/popup/LoginPopup';
 import LoadingTable from 'components/loader/LoadingTable';
+import ErrorPopup from 'components/popup/ErrorPopup';
+import SuccessToast from 'components/popup/toast/SuccessToast';
+import RemovedToast from 'components/popup/toast/RemovedToast';
 import Cookies from 'js-cookie';
-import { getTodos } from 'api';
+import axios from 'axios';
+import { getBanners } from 'api';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { baseUrl } from 'utils/Url';
 
 const BannerInput = () => {
   const navigate = useNavigate();
+  const [message, setMessage] = useState();
   const [data, setData] = useState([]);
 
-  const [isWarning, setIsWarning] = useState(false);
+  const [input, setInput] = useState({
+    banner: '',
+    alt: '',
+    link: '',
+  });
+
   const [loginVal, setLoginVal] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAdd, setIsAdd] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
+  const [isError, setIsError] = useState(false);
 
-  const fetchTodo = () => {
-    const isLogin = Cookies.get('token');
-    if (isLogin) {
-      getTodos().then((res) => {
-        setTimeout(() => {
-          setIsLoading(true);
-          setData(res.data);
-        }, 1000);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setInput({ ...input, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmit((prev) => !prev);
+
+    axios
+      .post(`${baseUrl}/banner`, {
+        banner: input.banner,
+        alt: input.alt,
+        link: input.link,
+      })
+      .then(setIsAdd(true))
+      .then(setTimeout(() => setIsAdd(false), 2200))
+      .catch((err) => {
+        throw err;
       });
+  };
+
+  const redirectError = () => {
+    setTimeout(() => {
+      navigate('/');
+    }, 600);
+  };
+
+  const fetchBanners = () => {
+    const isLogin = Cookies.get('token');
+
+    if (isLogin) {
+      getBanners()
+        .then((res) => {
+          setTimeout(() => {
+            setIsLoading(true);
+            setData(res.data.Data);
+          }, 400);
+        })
+        .catch((err) => {
+          setMessage(err.message);
+          setIsError(true);
+        });
       setLoginVal(false);
     }
   };
 
+  const deleteBanner = async (id) => {
+    await axios
+      .delete(`${baseUrl}/banner/${id}`)
+      .then(setIsDelete(true))
+      .then(setTimeout(() => setIsDelete(false), 2200));
+    fetchBanners();
+  };
+
   useEffect(() => {
-    fetchTodo();
-  }, []);
+    fetchBanners();
+  }, [isSubmit]);
 
   return (
     <div>
       <Navigation />
       <LoginPopup close={loginVal} />
-      <Modal open={isWarning} close={() => setIsWarning(false)} />
+      <ErrorPopup message={message} open={isError} close={redirectError} />
+      <SuccessToast open={isAdd} />
+      <RemovedToast open={isDelete} />
       <div className='mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8'>
         <div className='mx-auto max-w-lg text-center'>
           <h1 className='text-2xl font-bold sm:text-3xl'>Banner Input</h1>
         </div>
 
-        <form action='' className='mx-auto mt-8 mb-0 max-w-md space-y-4'>
+        <form
+          action=''
+          className='mx-auto mt-8 mb-0 max-w-md space-y-4'
+          onSubmit={handleSubmit}
+        >
           <div>
             <label htmlFor='banner name' className='sr-only'>
               Banner Name
@@ -55,6 +117,9 @@ const BannerInput = () => {
                 name='banner'
                 className='w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm'
                 placeholder='Banner Name'
+                value={input.banner}
+                onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -69,6 +134,9 @@ const BannerInput = () => {
                 name='alt'
                 className='w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm'
                 placeholder='Banner Alt'
+                value={input.alt}
+                onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -83,6 +151,9 @@ const BannerInput = () => {
                 name='link'
                 className='w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm'
                 placeholder='Banner Link'
+                value={input.link}
+                onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -122,33 +193,34 @@ const BannerInput = () => {
 
               <tbody className='divide-y divide-gray-200'>
                 {data?.map((data) => (
-                  <tr key={data.id}>
+                  <tr key={data?.id}>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
-                      {data.id}
+                      {data?.banner}
                     </td>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
-                      {data.userId}
+                      {data?.alt}
                     </td>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
-                      {data.title}
+                      {data?.link}
                     </td>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
                       <div className='flex justify-start items-center gap-4'>
+                        <Link to={`/bannerEdit/${data?.id}`} state={data}>
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            viewBox='0 0 24 24'
+                            fill='currentColor'
+                            className='w-5 h-5 hover:text-green-500'
+                          >
+                            <path d='M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z' />
+                            <path d='M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z' />
+                          </svg>
+                        </Link>
                         <svg
                           xmlns='http://www.w3.org/2000/svg'
                           viewBox='0 0 24 24'
                           fill='currentColor'
-                          onClick={() => navigate('/bannerEdit')}
-                          className='w-5 h-5 hover:text-green-500'
-                        >
-                          <path d='M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z' />
-                          <path d='M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z' />
-                        </svg>
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          viewBox='0 0 24 24'
-                          fill='currentColor'
-                          onClick={() => setIsWarning(true)}
+                          onClick={() => deleteBanner(data.id)}
                           className='w-5 h-5 hover:text-red-500'
                         >
                           <path

@@ -1,53 +1,109 @@
 import Cookies from 'js-cookie';
 import Footer from 'components/Footer';
 import Navigation from 'components/Navigation';
-import Modal from 'components/popup/Modal';
 import LoginPopup from 'components/popup/LoginPopup';
 import LoadingTable from 'components/loader/LoadingTable';
+import ErrorPopup from 'components/popup/ErrorPopup';
+import SuccessToast from 'components/popup/toast/SuccessToast';
+import RemovedToast from 'components/popup/toast/RemovedToast';
+import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getComments } from 'api';
+import { getCategories } from 'api';
+import { baseUrl } from 'utils/Url';
 
 const CategoryInput = () => {
   const navigate = useNavigate();
-  const [comments, setComments] = useState();
+  const [message, setMessage] = useState();
+  const [data, setData] = useState([]);
 
-  const [isWarning, setIsWarning] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [input, setInput] = useState({
+    kategori_produk: '',
+    nama_produk: '',
+  });
+
   const [loginVal, setLoginVal] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isAdd, setIsAdd] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
+  const [isError, setIsError] = useState(false);
 
-  const fetchCategory = () => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setInput({ ...input, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmit((prev) => !prev);
+
+    axios
+      .post(`${baseUrl}/kategori`, {
+        kategori_produk: input.kategori_produk,
+        nama_produk: input.nama_produk,
+      })
+      .then(setIsAdd(true))
+      .then(setTimeout(() => setIsAdd(false), 2200))
+      .catch((err) => {
+        throw err;
+      });
+  };
+
+  const redirectError = () => {
+    setTimeout(() => {
+      navigate('/');
+    }, 600);
+  };
+
+  const fetchCategories = () => {
     const isLogin = Cookies.get('token');
+
     if (isLogin) {
-      getComments()
+      getCategories()
         .then((res) => {
           setTimeout(() => {
             setIsLoading(true);
-            setComments(res.data);
-          }, 1000);
+            setData(res.data.Data);
+          }, 400);
         })
         .catch((err) => {
-          alert(err.response.data.message);
+          setMessage(err.message);
+          setIsError(true);
         });
       setLoginVal(false);
     }
   };
 
+  const deleteCategory = async (id) => {
+    await axios
+      .delete(`${baseUrl}/kategori/${id}`)
+      .then(setIsDelete(true))
+      .then(setTimeout(() => setIsDelete(false), 2200));
+    fetchCategories();
+  };
+
   useEffect(() => {
-    fetchCategory();
-  }, []);
+    fetchCategories();
+  }, [isSubmit]);
 
   return (
     <div>
       <Navigation />
       <LoginPopup close={loginVal} />
-      <Modal open={isWarning} close={() => setIsWarning(false)} />
+      <ErrorPopup message={message} open={isError} close={redirectError} />
+      <SuccessToast open={isAdd} />
+      <RemovedToast open={isDelete} />
       <div className='mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8'>
         <div className='mx-auto max-w-lg text-center'>
           <h1 className='text-2xl font-bold sm:text-3xl'>Category Input</h1>
         </div>
 
-        <form action='' className='mx-auto mt-8 mb-0 max-w-md space-y-4'>
+        <form
+          action=''
+          className='mx-auto mt-8 mb-0 max-w-md space-y-4'
+          onSubmit={handleSubmit}
+        >
           <div>
             <label htmlFor='product category' className='sr-only'>
               Product Category
@@ -59,6 +115,9 @@ const CategoryInput = () => {
                 name='kategori_produk'
                 className='w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm'
                 placeholder='Product Category'
+                value={input.kategori_produk}
+                onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -73,48 +132,9 @@ const CategoryInput = () => {
                 name='nama_produk'
                 className='w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm'
                 placeholder='Product Name'
-              />
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor='banner' className='sr-only'>
-              Banner
-            </label>
-            <div className='relative'>
-              <input
-                type='text'
-                name='banner'
-                className='w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm'
-                placeholder='Banner'
-              />
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor='banner link' className='sr-only'>
-              Banner Link
-            </label>
-            <div className='relative'>
-              <input
-                type='text'
-                name='link_banner'
-                className='w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm'
-                placeholder='Banner Link'
-              />
-            </div>
-          </div>
-
-          <div>
-            <label htmlFor='quantity' className='sr-only'>
-              Quantity
-            </label>
-            <div className='relative'>
-              <input
-                type='text'
-                name='qty'
-                className='w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm'
-                placeholder='Quantity'
+                value={input.nama_produk}
+                onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -131,20 +151,19 @@ const CategoryInput = () => {
       </div>
 
       <div className='px-4'>
-        <h1 className='text-center text-xl font-semibold py-4'>Meta Data</h1>
+        <h1 className='text-center text-xl font-semibold py-4'>
+          Category Data
+        </h1>
         <div className='container mx-auto overflow-hidden overflow-x-auto rounded-lg border border-gray-200 max-w-screen-md mb-12'>
           {isLoading ? (
             <table className='w-full divide-y divide-gray-200 text-sm'>
               <thead className='bg-gray-100'>
                 <tr>
                   <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900'>
-                    Meta Title
+                    Category Name
                   </th>
                   <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900'>
-                    Meta URL
-                  </th>
-                  <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900'>
-                    Meta Description
+                    Product Category
                   </th>
                   <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900'>
                     Action
@@ -153,16 +172,13 @@ const CategoryInput = () => {
               </thead>
 
               <tbody className='divide-y divide-gray-200'>
-                {comments?.map((data) => (
-                  <tr key={data.id}>
+                {data?.map((data) => (
+                  <tr key={data?.id}>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
-                      {data.name}
+                      {data?.kategori_produk}
                     </td>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
-                      {data.email}
-                    </td>
-                    <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
-                      {data.body}
+                      {data?.nama_produk}
                     </td>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
                       <div className='flex justify-start items-center gap-4'>
@@ -180,7 +196,7 @@ const CategoryInput = () => {
                           xmlns='http://www.w3.org/2000/svg'
                           viewBox='0 0 24 24'
                           fill='currentColor'
-                          onClick={() => setIsWarning(true)}
+                          onClick={() => deleteCategory(data.id)}
                           className='w-5 h-5 hover:text-red-500'
                         >
                           <path

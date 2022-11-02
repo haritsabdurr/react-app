@@ -1,6 +1,6 @@
 import React from 'react';
 
-const UpdatedToast = ({ open }) => {
+const RegisterToast = ({ open }) => {
   return (
     <div
       id='toast-success'
@@ -25,9 +25,9 @@ const UpdatedToast = ({ open }) => {
         </svg>
         <span className='sr-only'>Check icon</span>
       </div>
-      <div className='ml-5 text-sm font-normal'>Item updated successfully!</div>
+      <div className='ml-5 text-sm font-normal'>Registered successfully!</div>
     </div>
   );
 };
 
-export default UpdatedToast;
+export default RegisterToast;
