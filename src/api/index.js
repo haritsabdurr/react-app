@@ -24,7 +24,7 @@ export async function getBanners() {
 
 export async function getCategories() {
   try {
-    const response = await axios.get(`${baseUrl}/kategori`);
+    const response = await axios.get(`${baseUrl}/descs`);
     return response;
   } catch (error) {
     throw error;

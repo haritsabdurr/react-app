@@ -2,7 +2,7 @@ import Footer from 'components/Footer';
 import Navigation from 'components/Navigation';
 import UpdatedToast from 'components/popup/toast/UpdatedToast';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { baseUrl } from 'utils/Url';
 
@@ -16,9 +16,6 @@ const BannerEdit = () => {
   const [banner, setBanner] = useState(data.banner);
   const [alt, setAlt] = useState(data.alt);
   const [link, setLink] = useState(data.link);
-  // const [banner, setBanner] = useState(data.banner);
-  // const [alt, setAlt] = useState(data.alt);
-  // const [link, setLink] = useState(data.link);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -37,14 +34,6 @@ const BannerEdit = () => {
       throw err;
     });
   };
-
-  const cekBanner = () => {
-    console.log(data);
-  };
-
-  useEffect(() => {
-    cekBanner();
-  }, []);
 
   return (
     <>

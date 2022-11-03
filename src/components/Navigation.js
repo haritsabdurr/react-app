@@ -85,10 +85,10 @@ const Navigation = () => {
                   <a
                     className='text-gray-500 transition hover:text-gray-500/75 dark:text-white dark:hover:text-white/75 cursor-pointer'
                     onClick={() => {
-                      navigate('/categoryInput');
+                      navigate('/descInput');
                     }}
                   >
-                    Category
+                    Desc
                   </a>
                 </li>
 
@@ -117,7 +117,7 @@ const Navigation = () => {
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 24 24'
                     fill='currentColor'
-                    className='w-4 h-4 border border-white rounded-full'
+                    className='w-4 h-4 border border-white rounded-full mt-0.5'
                   >
                     <path
                       fillRule='evenodd'
@@ -258,22 +258,28 @@ const Navigation = () => {
             Banner
           </a>
 
-          <a className='text-slate-900 hover:bg-emerald-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium'>
-            Category
+          <a
+            className='text-slate-900 hover:bg-emerald-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium'
+            onClick={() => navigate('/descInput')}
+          >
+            Desc
           </a>
 
-          <a className='text-slate-900 hover:bg-emerald-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium'>
-            Users
+          <a
+            className='text-slate-900 hover:bg-emerald-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium'
+            onClick={() => navigate('/photoGallery')}
+          >
+            Photos
           </a>
           <hr className='pb-1' />
           {token ? (
             <>
-              <a className='flex justify-center items-center space-x-1'>
+              <a className='flex justify-center items-center space-x-1 py-1.5 border border-black/20 rounded-md'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   viewBox='0 0 24 24'
                   fill='currentColor'
-                  className='w-5 h-5'
+                  className='w-4 h-4 mt-0.5'
                 >
                   <path
                     fillRule='evenodd'

@@ -8,7 +8,7 @@ import SuccessToast from 'components/popup/toast/SuccessToast';
 import RemovedToast from 'components/popup/toast/RemovedToast';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { getCategories } from 'api';
 import { baseUrl } from 'utils/Url';
 
@@ -18,8 +18,8 @@ const CategoryInput = () => {
   const [data, setData] = useState([]);
 
   const [input, setInput] = useState({
-    kategori_produk: '',
-    nama_produk: '',
+    title: '',
+    desc: '',
   });
 
   const [loginVal, setLoginVal] = useState(true);
@@ -39,9 +39,9 @@ const CategoryInput = () => {
     setIsSubmit((prev) => !prev);
 
     axios
-      .post(`${baseUrl}/kategori`, {
-        kategori_produk: input.kategori_produk,
-        nama_produk: input.nama_produk,
+      .post(`${baseUrl}/desc`, {
+        title: input.title,
+        desc: input.desc,
       })
       .then(setIsAdd(true))
       .then(setTimeout(() => setIsAdd(false), 2200))
@@ -75,9 +75,13 @@ const CategoryInput = () => {
     }
   };
 
+  const cekId = (id) => {
+    console.log(id);
+  };
+
   const deleteCategory = async (id) => {
     await axios
-      .delete(`${baseUrl}/kategori/${id}`)
+      .delete(`${baseUrl}/desc/${id}`)
       .then(setIsDelete(true))
       .then(setTimeout(() => setIsDelete(false), 2200));
     fetchCategories();
@@ -96,7 +100,7 @@ const CategoryInput = () => {
       <RemovedToast open={isDelete} />
       <div className='mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8'>
         <div className='mx-auto max-w-lg text-center'>
-          <h1 className='text-2xl font-bold sm:text-3xl'>Category Input</h1>
+          <h1 className='text-2xl font-bold sm:text-3xl'>Description Input</h1>
         </div>
 
         <form
@@ -105,17 +109,17 @@ const CategoryInput = () => {
           onSubmit={handleSubmit}
         >
           <div>
-            <label htmlFor='product category' className='sr-only'>
-              Product Category
+            <label htmlFor='title' className='sr-only'>
+              Title
             </label>
 
             <div className='relative'>
               <input
                 type='text'
-                name='kategori_produk'
+                name='title'
                 className='w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm'
-                placeholder='Product Category'
-                value={input.kategori_produk}
+                placeholder='Title'
+                value={input.title}
                 onChange={handleChange}
                 required
               />
@@ -123,16 +127,16 @@ const CategoryInput = () => {
           </div>
 
           <div>
-            <label htmlFor='product name' className='sr-only'>
-              Product Name
+            <label htmlFor='desc' className='sr-only'>
+              Description
             </label>
             <div className='relative'>
               <input
                 type='text'
-                name='nama_produk'
+                name='desc'
                 className='w-full rounded-lg border-gray-200 p-4 pr-12 text-sm shadow-sm'
-                placeholder='Product Name'
-                value={input.nama_produk}
+                placeholder='Desc'
+                value={input.desc}
                 onChange={handleChange}
                 required
               />
@@ -152,7 +156,7 @@ const CategoryInput = () => {
 
       <div className='px-4'>
         <h1 className='text-center text-xl font-semibold py-4'>
-          Category Data
+          Data Description
         </h1>
         <div className='container mx-auto overflow-hidden overflow-x-auto rounded-lg border border-gray-200 max-w-screen-md mb-12'>
           {isLoading ? (
@@ -160,10 +164,10 @@ const CategoryInput = () => {
               <thead className='bg-gray-100'>
                 <tr>
                   <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900'>
-                    Category Name
+                    Title
                   </th>
                   <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900'>
-                    Product Category
+                    Description
                   </th>
                   <th className='whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900'>
                     Action
@@ -175,28 +179,30 @@ const CategoryInput = () => {
                 {data?.map((data) => (
                   <tr key={data?.id}>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
-                      {data?.kategori_produk}
+                      {data?.title}
                     </td>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
-                      {data?.nama_produk}
+                      {data?.desc}
                     </td>
                     <td className='whitespace-nowrap px-4 py-2 text-gray-900'>
                       <div className='flex justify-start items-center gap-4'>
+                        <Link to={`/descEdit/${data.id}`} state={data}>
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            viewBox='0 0 24 24'
+                            fill='currentColor'
+                            // onClick={() => cekId(data?.id)}
+                            className='w-5 h-5 hover:text-green-500'
+                          >
+                            <path d='M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z' />
+                            <path d='M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z' />
+                          </svg>
+                        </Link>
                         <svg
                           xmlns='http://www.w3.org/2000/svg'
                           viewBox='0 0 24 24'
                           fill='currentColor'
-                          onClick={() => navigate('/categoryEdit')}
-                          className='w-5 h-5 hover:text-green-500'
-                        >
-                          <path d='M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z' />
-                          <path d='M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z' />
-                        </svg>
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          viewBox='0 0 24 24'
-                          fill='currentColor'
-                          onClick={() => deleteCategory(data.id)}
+                          onClick={() => deleteCategory(data?.id)}
                           className='w-5 h-5 hover:text-red-500'
                         >
                           <path

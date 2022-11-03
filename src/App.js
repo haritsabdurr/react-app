@@ -20,8 +20,8 @@ function App() {
         <Route path='/metaEdit/:id' element={<MetaEdit />} />
         <Route path='/bannerInput' element={<BannerInput />} />
         <Route path='/bannerEdit/:id' element={<BannerEdit />} />
-        <Route path='/categoryInput' element={<CategoryInput />} />
-        <Route path='/categoryEdit/:id' element={<CategoryEdit />} />
+        <Route path='/descInput' element={<CategoryInput />} />
+        <Route path='/descEdit/:id' element={<CategoryEdit />} />
         <Route path='/photoGallery' element={<Photos />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />

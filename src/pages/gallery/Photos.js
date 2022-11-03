@@ -31,7 +31,7 @@ const Photos = () => {
           setTimeout(() => {
             setData(res.data);
             setIsLoading(true);
-          }, 800);
+          }, 400);
         })
         .catch((err) => {
           setMessage(err.message);
@@ -52,7 +52,7 @@ const Photos = () => {
         <LoginPopup close={loginVal} />
         <ErrorPopup message={message} open={isError} close={redirectError} />
         {isLoading ? (
-          <div className='grid grid-cols-3 gap-3'>
+          <div className='grid grid-cols-1 sm:grid-cols-3 gap-3'>
             {data.map((data) => (
               <a
                 key={data.id}
