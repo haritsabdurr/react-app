@@ -2,7 +2,7 @@ import React from 'react';
 
 const LoadingImage = () => {
   return (
-    <div className='grid grid-cols-1 sm:grid-cols-3 gap-3 animate-pulse'>
+    <div className='grid grid-cols-1 sm:grid-cols-3 gap-3 animate-pulse pt-2 pb-32'>
       <a href='#' className='block bg-white rounded-xl shadow-xl p-3'>
         <div className='flex justify-center items-center w-full h-56 bg-gray-300 rounded sm:w-full dark:bg-gray-700'>
           <svg
