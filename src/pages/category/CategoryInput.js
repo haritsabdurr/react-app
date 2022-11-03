@@ -48,6 +48,7 @@ const CategoryInput = () => {
       .catch((err) => {
         throw err;
       });
+    fetchCategories();
   };
 
   const redirectError = () => {
@@ -73,10 +74,6 @@ const CategoryInput = () => {
         });
       setLoginVal(false);
     }
-  };
-
-  const cekId = (id) => {
-    console.log(id);
   };
 
   const deleteCategory = async (id) => {

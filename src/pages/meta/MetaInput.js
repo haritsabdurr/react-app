@@ -50,6 +50,7 @@ const MetaInput = () => {
       .catch((err) => {
         throw err;
       });
+    fetchUsers();
   };
 
   const redirectError = () => {

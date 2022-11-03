@@ -50,6 +50,7 @@ const BannerInput = () => {
       .catch((err) => {
         throw err;
       });
+    fetchBanners();
   };
 
   const redirectError = () => {
