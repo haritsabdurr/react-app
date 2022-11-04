@@ -1,13 +1,38 @@
-import React from 'react';
+import { motion } from 'framer-motion';
 
 const RemovedToast = ({ open }) => {
+  const subMenuAnimate = {
+    enter: {
+      opacity: 1,
+      rotateX: 0,
+      transition: {
+        duration: 0.6,
+      },
+      display: 'flex',
+    },
+    exit: {
+      opacity: 0,
+      rotateX: -19,
+      transition: {
+        duration: 0.2,
+        delay: 0.1,
+      },
+      transitionEnd: {
+        display: 'none',
+      },
+    },
+  };
+
   return (
-    <div
+    <motion.div
       id='toast-success'
       className={`${
         open ? 'flex' : 'hidden'
-      } absolute top-24 right-20 sm:right-10 items-center p-4 mb-4 w-full max-w-[16rem] text-white bg-red-600 rounded-lg shadow`}
+      } absolute top-24 right-20 sm:right-12 items-center p-4 mb-4 w-full max-w-[16rem] text-white bg-red-600 rounded-lg shadow`}
       role='alert'
+      initial='exit'
+      animate={open ? 'enter' : ''}
+      variants={subMenuAnimate}
     >
       <div className='inline-flex flex-shrink-0 justify-center items-center w-8 h-8 text-red-600 bg-red-50 rounded-lg'>
         <svg
@@ -26,7 +51,7 @@ const RemovedToast = ({ open }) => {
         <span className='sr-only'>Check icon</span>
       </div>
       <div className='ml-5 text-sm font-normal'>Item removed successfully!</div>
-    </div>
+    </motion.div>
   );
 };
 

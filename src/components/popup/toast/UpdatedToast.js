@@ -1,13 +1,38 @@
-import React from 'react';
+import { motion } from 'framer-motion';
 
 const UpdatedToast = ({ open }) => {
+  const subMenuAnimate = {
+    enter: {
+      opacity: 1,
+      rotateX: 0,
+      transition: {
+        duration: 0.6,
+      },
+      display: 'flex',
+    },
+    exit: {
+      opacity: 0,
+      rotateX: -19,
+      transition: {
+        duration: 0.2,
+        delay: 0.1,
+      },
+      transitionEnd: {
+        display: 'none',
+      },
+    },
+  };
+
   return (
-    <div
+    <motion.div
       id='toast-success'
       className={`${
         open ? 'flex' : 'hidden'
       } absolute top-24 right-20 sm:right-10 items-center p-4 mb-4 w-full max-w-[16rem] text-white bg-blue-600 rounded-lg shadow`}
       role='alert'
+      initial='exit'
+      animate={open ? 'enter' : ''}
+      variants={subMenuAnimate}
     >
       <div className='inline-flex flex-shrink-0 justify-center items-center w-8 h-8 text-blue-600 bg-blue-100 rounded-lg'>
         <svg
@@ -26,7 +51,7 @@ const UpdatedToast = ({ open }) => {
         <span className='sr-only'>Check icon</span>
       </div>
       <div className='ml-5 text-sm font-normal'>Item updated successfully!</div>
-    </div>
+    </motion.div>
   );
 };
 
