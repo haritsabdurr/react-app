@@ -1,10 +1,16 @@
+import Footer from 'components/Footer';
+import Navigation from 'components/Navigation';
 import React from 'react';
 
 const Page404 = () => {
   return (
-    <div className='flex items-center text-center text-4xl font-bold'>
-      Page Not Found
-    </div>
+    <>
+      <Navigation />
+      <div className='flex justify-center items-center text-3xl font-semibold py-72'>
+        404 | Page Not Found
+      </div>
+      <Footer />
+    </>
   );
 };
 

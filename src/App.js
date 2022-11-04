@@ -25,7 +25,7 @@ function App() {
         <Route path='/photoGallery' element={<Photos />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
-        <Route path='/404' element={<Page404 />} />
+        <Route path='/*' element={<Page404 />} />
       </Routes>
     </Router>
   );
