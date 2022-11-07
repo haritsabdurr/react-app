@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const Navigation = () => {
@@ -8,6 +8,7 @@ const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [token, setToken] = useState('');
   const [user, setUser] = useState('');
+  const [id, setId] = useState('');
   const [profile, setProfile] = useState(false);
 
   const logoutHandler = () => {
@@ -19,6 +20,7 @@ const Navigation = () => {
   useEffect(() => {
     setToken(Cookies.get('token'));
     setUser(Cookies.get('user'));
+    setId(Cookies.get('id'));
   }, [logoutHandler]);
 
   const subMenuAnimate = {
@@ -209,13 +211,15 @@ const Navigation = () => {
         <div className='flow-root py-2'>
           <div className='-my-2 divide-y divide-gray-100'>
             <div className='p-2'>
-              <a
-                href='#'
-                className='block rounded-lg px-4 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700'
-                role='menuitem'
-              >
-                Profile Settings
-              </a>
+              <Link to={`/profile/${id}`} state={id}>
+                <a
+                  href='#'
+                  className='block rounded-lg px-4 py-1 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+                  role='menuitem'
+                >
+                  Profile Settings
+                </a>
+              </Link>
             </div>
 
             <div className='py-2 px-4'>

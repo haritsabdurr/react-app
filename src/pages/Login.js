@@ -40,6 +40,7 @@ const Login = () => {
 
         Cookies.set('token', res.data.accessToken);
         Cookies.set('user', res.data.username);
+        Cookies.set('id', res.data.id);
         console.log(decoded);
 
         navigate('/');

@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { baseUrl } from 'utils/Url';
+import Cookies from 'js-cookie';
+import { baseUrl, urlAccount } from 'utils/Url';
 import { urlPhotos } from 'utils/Url';
 
 export async function getMetas() {
@@ -23,6 +24,14 @@ export async function getBanners() {
 export async function getCategories() {
   try {
     const response = await axios.get(`${baseUrl}/descs`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
+export async function getUserById() {
+  try {
+    const response = await axios.get(`${urlAccount}/descs`);
     return response;
   } catch (error) {
     throw error;

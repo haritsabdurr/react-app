@@ -10,6 +10,8 @@ import Page404 from 'pages/404';
 import Photos from 'pages/gallery/Photos';
 import Login from 'pages/Login';
 import Register from 'pages/Register';
+import Profile from 'pages/profile/Profile';
+import ProfileEdit from 'pages/profile/ProfileEdit';
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
         <Route path='/photoGallery' element={<Photos />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
+        <Route path='/profile/:id' element={<Profile />} />
+        <Route path='/profileEdit/:id' element={<ProfileEdit />} />
         <Route path='/*' element={<Page404 />} />
       </Routes>
     </Router>
